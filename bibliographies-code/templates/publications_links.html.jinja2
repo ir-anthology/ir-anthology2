@@ -1,0 +1,17 @@
+{%- if entry.fields.arxivurl %} [<a class="arxiv" href="{{ entry.fields.arxivurl }}">arxiv</a>]{% endif %}
+{%- if entry.fields.awardurl %} [<a class="award" href="{{ entry.fields.awardurl }}">award</a>]{% endif %}
+{%- if true %} [<a class="bib-toggle" data-target="bibtex-{{ entry.fields.bibid }}" href="#?q={{ entry.fields.bibid }}">bib</a>]{% endif %}
+{%- if entry.fields['clef-working-notesurl'] %} [<a class="clef-working-notes" href="{{ entry.fields['clef-working-notesurl'] }}">clef working notes</a>]{% endif %}
+{%- if entry.fields.codeurl %} [<a class="code" href="{{ entry.fields.codeurl }}">code</a>]{% endif %}
+{%- if true %} [<a class="copylink" href="">copylink</a>]{% endif %}
+{%- if entry.fields.dataurl %} [<a class="data" href="{{ entry.fields.dataurl }}">data</a>]{% endif %}
+{%- if entry.fields.demourl %} [<a class="demo" href="{{ entry.fields.demourl }}">demo</a>]{% endif %}
+{%- if entry.fields.doi %} [<a class="doi" href="https://doi.org/{{ entry.fields.doi }}">doi</a>]{% endif %}
+{%- if entry.fields['ecir-invited-paperurl'] %} [<a class="ecir-invited-paper" href="{{ entry.fields['ecir-invited-paperurl'] }}">ecir invited paper</a>]{% endif %}
+{%- if entry.fields.eventurl %} [<a class="event" href="{{ entry.fields.eventurl }}">event</a>]{% endif %}
+{%- if entry.fields.posters_href %} [<a class="poster" href="{{ entry.fields.posters_href }}">poster</a>]{% endif %}
+{%- if entry.fields.url %} [<a class="publisher" href="{{ entry.fields.url }}">publisher</a>]{% endif %}
+{%- if entry.fields.researchurl %} [<a class="research" href="{{ entry.fields.researchurl }}">research</a>]{% endif %}
+{%- if entry.fields.slides_href %} [<a class="slides" href="{{ entry.fields.slides_href }}">slides</a>]{% endif %}
+{%- if entry.fields.videourl %} [<a class="video" href="{{ entry.fields.videourl }}">video</a>]{% endif %}
+{%- if entry.fields.wikipediaurl %} [<a class="wikipedia" href="{{ entry.fields.wikipediaurl }}">wikipedia</a>]{% endif %}

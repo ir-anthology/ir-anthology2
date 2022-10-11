@@ -1,0 +1,13 @@
+{% for year, entries in bib_entries %}
+<div id="year-{{ year }}" class="year-entry">
+  <h2 class="year">{{ year }}</h2>
+    {% for entry in entries -%}
+    <a id="{{ entry.fields['bibid'] }}"></a>
+    <div {% include 'publications_div_attributes.html.jinja2' %}>
+      {%- include entry.type + '.html.jinja2' %}
+     {% include 'publications_links.html.jinja2' %}
+      {% include 'publications_textarea.html.jinja2' %}
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}

@@ -1,0 +1,97 @@
+---
+layout: default
+nav_active: data
+title: Webis Data {{ item.fields['title'] }}
+description: Overview of corpora that are used by the Webis research group
+---
+<nav class="uk-container">
+    <ul class="uk-breadcrumb">
+        <li><a href="../index.html">Webis.de</a></li>
+        <li><a href="../../../data.html">Data</a></li>
+        <li class="uk-disabled"><a href="#">{{ item.fields['title'] }}</a></li>
+    </ul>
+</nav>
+
+
+<script type="application/ld+json">
+    {{ item.fields['jsonld'] }}
+</script>
+
+<main class="uk-section uk-section-default">
+    <div class="uk-container">
+        <h1>{{ item.fields['title'] }}</h1>
+
+        <ul class="uk-list">
+            <!-- Comment out sections you do not provide -->
+            {% if item.fields['synopsishtml'] %}<li><span data-uk-icon="chevron-down"></span> <a href="#synopsis">Synopsis</a></li>{% endif %}
+            {% if item.fields['download'] %}<li><span data-uk-icon="chevron-down"></span> <a href="#download">Access</a></li>{% endif %}
+            {% if item.fields['people'] %}<li><span data-uk-icon="chevron-down"></span> <a href="#people">People</a></li>{% endif %}
+            {% if item.fields['people'] %}<li><span data-uk-icon="chevron-down"></span> <a href="#publications">Publications</a></li>{% endif %}
+        </ul>
+    </div>
+
+    <div class="uk-container uk-margin-medium">
+        {% if item.fields['synopsishtml'] %}
+        <!--
+        SECTION Synopsis
+        -->
+        <h2 id="synopsis">Synopsis</h2>
+        <p>
+            {{ item.fields['synopsishtml'] }}
+        </p>
+        {% endif %}
+
+        <!--
+        SECTION Download
+        -->
+        <h2 id="download">Access</h2>
+            <p>
+                Please refer to the <a href="#publications">publications</a> for citing the dataset.
+                {%- if item.fields['doi'] != "-" %} If you want to link the dataset, please use the dataset permalink [<a class="doi" href="{{ item.fields['doi'] }}">doi</a>]. {% endif %}
+            </p>
+        {% if has_value(item, 'zenodourl') or has_value(item, 'googleurl') or has_value(item, 'internetarchiveurl') %}
+        <ul>
+            {% if has_value(item, 'browser') %}
+            <li>Browse the dataset <a href="{{ item.fields['browser'] }}">here.</a></li>
+            {% endif %}
+            {% if has_value(item, 'zenodourl') or has_value(item, 'internetarchiveurl') %}
+            <li>Download the dataset {% if item.fields['zenodourl'] != "-" %}from <a href="{{ item.fields['zenodourl'] }}">Zenodo</a>{% endif %}
+                {% if has_value(item, 'zenodourl') and has_value(item, 'internetarchiveurl') %} or {% endif %}
+                {% if has_value(item, 'internetarchiveurl') %} from the <a href="{{ item.fields['internetarchiveurl'] }}">Internet Archive</a>{% endif %}</li>
+            {% endif %}
+            {% if has_value(item, 'googleurl') %}
+            <li>Find the related metadata at <a href="{{ item.fields['googleurl'] }}">Google</a>.</li>
+            {% endif %}
+        </ul>
+        {% endif %}
+
+        {% if item.fields['people'] %}
+        <!--
+        SECTION People
+        -->
+        <h2 id="people">People</h2>
+        <ul>
+            {% for author in item.fields['people'] %}
+                <li>{% if author['url'] %}<a href="{{ author['url'] }}">{{ author['fullname'] }}</a>{% else %}{{ author['fullname'] }}{% endif %}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if item.fields['publicationsquery'] %}
+        <h2 id="publications">Publications</h2>
+        <div id="publications-list">
+            <p>
+                <script src="https://assets.webis.de/js/selection.js"></script>
+                <script src="https://assets.webis.de/js/filter.js"></script>
+                <script>
+                    includeBibentries(document.getElementById("publications-list"), "{{ item.fields['publicationsquery'] }}");
+                </script>
+            </p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</main>
+
+

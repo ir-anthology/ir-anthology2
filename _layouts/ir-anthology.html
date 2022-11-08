@@ -26,25 +26,29 @@
         <nav class="uk-margin-large-top">
             <ul class="uk-nav uk-nav-primary uk-nav-parent-icon" data-uk-nav>
                 <li{% if page.nav_active == "people" %} class="uk-active"{% endif %}>
-                    <a href="{{ '/people.html' | relative_url }}">Awards</a>
+                    <a href="{{ '/people.html' | relative_url }}">People</a>
                 </li>
                 <li{% if page.nav_active == "for-students" %} class="uk-active"{% endif %}>
-                    <a href="{{ '/for-students.html' | relative_url }}">Data</a>
-                </li>
-                <li{% if page.nav_active == "lecturenotes" %} class="uk-active"{% endif %}>
-                    <a href="{{ '/lecturenotes.html' | relative_url }}">Events</a>
-                </li>
-                <li{% if page.nav_active == "research" %} class="uk-active"{% endif %}>
-                    <a href="{{ '/research.html' | relative_url }}">People</a>
+                    <a href="{{ '/for-students.html' | relative_url }}">Teaching</a>
                 </li>
                 <li{% if page.nav_active == "publications" %} class="uk-active"{% endif %}>
                     <a href="{{ '/publications.html' | relative_url }}">Publications</a>
+                </li>
+                <li{% if page.nav_active == "research" %} class="uk-active"{% endif %}>
+                    <a href="{{ '/research.html' | relative_url }}">Data</a>
+                </li>
+                <li{% if page.nav_active == "publications" %} class="uk-active"{% endif %}>
+                    <a href="{{ '/publications.html' | relative_url }}">Shared Tasks</a>
                 </li>
                 <li{% if page.nav_active == "data" %} class="uk-active"{% endif %}>
                     <a href="{{ '/data.html' | relative_url }}">Shared Tasks</a>
                 </li>
                 <li{% if page.nav_active == "events" %} class="uk-active"{% endif %}>
-                    <a href="{{ '/events.html' | relative_url }}">Teaching</a>
+                    <a href="{{ '/events.html' | relative_url }}">Events</a>
+                </li>
+                </li>
+                <li{% if page.nav_active == "events" %} class="uk-active"{% endif %}>
+                    <a href="{{ '/events.html' | relative_url }}">Awards</a>
                 </li>
             </ul>
         </nav>
@@ -71,25 +75,25 @@
         <div class="uk-navbar-right desktop-nav">
             <ul class="uk-navbar-nav">
                 <li{% if page.nav_active == "people" %} class="uk-active"{% endif %}>
-                <a href="{{ '/people.html' | relative_url }}">Awards</a>
+                <a href="{{ '/people.html' | relative_url }}">People</a>
                 </li>
                 <li class="{% if page.nav_active == 'for-students' %} uk-active{% endif %}">
-                    <a href="{{ '/for-students.html' | relative_url }}">Data</a>
+                    <a href="{{ '/for-students.html' | relative_url }}">Teaching</a>
                 </li>
-                <li class="nav-group-start{% if page.nav_active == 'lecturenotes' %} uk-active{% endif %}">
-                    <a href="{{ '/lecturenotes.html' | relative_url }}">Events</a>
+                <li class="nav-group-start{% if page.nav_active == 'publications' %} uk-active{% endif %}">
+                    <a href="{{ '/publications.html' | relative_url }}">Publications</a>
                 </li>
                 <li{% if page.nav_active == "research" %} class="uk-active"{% endif %}>
-                <a href="{{ '/research.html' | relative_url }}">People</a>
+                <a href="{{ '/research.html' | relative_url }}">Data</a>
                 </li>
                 <li{% if page.nav_active == "publications" %} class="uk-active"{% endif %}>
-                <a href="{{ '/ir-anthology-subset2.html' | relative_url }}">Publications</a>
+                <a href="{{ '/ir-anthology-subset2.html' | relative_url }}">Shared Tasks</a>
                 </li>
                 <li{% if page.nav_active == "events" %} class="uk-active"{% endif %}>
-                <a href="{{ '/events.html' | relative_url }}">Shared Tasks</a>
+                <a href="{{ '/events.html' | relative_url }}">Events</a>
                 </li>
                 <li{% if page.nav_active == "facilities" %} class="uk-active"{% endif %}>
-                <a href="{{ '/facilities.html' | relative_url }}">Teaching</a>
+                <a href="{{ '/facilities.html' | relative_url }}">Awards</a>
                 </li>
             </ul>
         </div>

@@ -6,7 +6,7 @@
     <meta name="description" content="{{ page.description }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="copyright" content="&copy; {{site.time | date: '%Y'}} Webis">
-    <link rel="icon" type="image/png" href="https://assets.webis.de/img/favicon.png">
+    <link rel="icon" type="image/png" href={{ '/img/ir-anthology-logo.png' }}>
 
     <link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}?{{site.time | date: '%s'}}">
     {%- for css in page.additional_css %}
@@ -60,7 +60,7 @@
         <div class="uk-navbar-left">
             <ul class="uk-navbar-nav">
                 <li{% if page.nav_active == "index" %} class="uk-active"{% endif %}>
-                    <a href="{{ '/' | relative_url }}"><img src="https://assets.webis.de/img/webis-logo.png" alt="Webis Logo" class="uk-logo"> Webis.de</a>
+                    <a href="{{ '/img/ir-anthology-logo.png' }}"><img src="img/ir-anthology-logo.png" alt="IR-Anthology Logo" class="uk-logo"> ir.webis.de</a>
                 </li>
             </ul>
         </div>

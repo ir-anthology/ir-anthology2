@@ -109,6 +109,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+/bibliographies-code/ir-anthology-env
+
 
 # Spyder project settings
 .spyderproject

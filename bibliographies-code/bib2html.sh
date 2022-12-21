@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VENV_NAME=ir-anthology-env
+VENV_NAME=test
 PYTHON=${VENV_NAME}/bin/python3
 INPUT_PATH=../bibliographies-webis/
 OUTPUT_PATH=../bibliographies-webis/html/

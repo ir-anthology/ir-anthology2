@@ -27,6 +27,7 @@ import json
 import os
 import pathlib
 import sys
+import random
 import traceback
 from collections import OrderedDict
 from datetime import datetime
@@ -118,6 +119,9 @@ class WebisBibParser(bibtex.Parser):
             else:
                 entry.fields[field_name] = field_value
             seen_fields.add(field_name.lower())
+        if key in self.data.entries:
+            #TODO: Find another solution this is just a hack to deal with duplicates
+            key = key + "-" + str(random.randrange(0,1000,2))
         self.data.add_entry(key, entry)
 
 
@@ -233,18 +237,27 @@ def get_existing_hrefs(username, repo, directory):
 
 
 class Bib2Html:
-    universities = {'weimar': "Bauhaus-Universität Weimar"}
+    universities = {'weimar': "Bauhaus-Universitï¿½t Weimar"}
 
     data_categories = {'released-webis-corpora': "Released Webis Corpora",
                        'pan-corpora': "PAN Corpora",
-                       'touche-corpora': "Touché Corpora",
+                       'touche-corpora': "Touchï¿½ Corpora",
                        'internal-webis-corpora': "Internal Webis Corpora",
                        'affiliated-corpora': "Affiliated Corpora",
                        'other-corpora': "Other Corpora"}
+    
+    people_categories = {'secretaries': 'Secretary',
+                         'assistants': 'Assistants',
+                         'former-assistants': 'Former Assistant',
+                         'visiting-researchers': 'Visiting Researchers',
+                         'external-phds': 'External PhD',
+                         'head': 'Head',
+                         'student-assistants': 'student-assistants'}
 
     dataset_page_template_filename = script_dir + "/templates/dataset_page.html.jinja2"
     data_table_template_filename = script_dir + "/templates/data_table.html.jinja2"
     bib_list_template_filename = script_dir + "/templates/publications.html.jinja2"
+    people_template_filename = script_dir + "/templates/people.html.jinja2"
 
     def __init__(self, input_path, output_path):
         self.input_path = input_path
@@ -265,7 +278,7 @@ class Bib2Html:
     def __del__(self):
         bib2html_logger.removeHandler(self.ch)
 
-    def get_table(self, category_id, bib_data, output_path):
+    def get_table(self, category_id, webis_people, output_path):
         """
 
         :param category_id:
@@ -279,13 +292,38 @@ class Bib2Html:
         output = t.render(category_id=category_id, category_name=self.data_categories[category_id])
 
         table = lxml.html.fragment_fromstring(output)
-        for i, item in enumerate(bib_data):
+        for i, item in enumerate(webis_people):
             row = self.get_row(item.key, item, output_path)
             table.find("tbody").append(row)
 
         et.indent(table, space="\t", level=0)
 
         return et.tostring(table, pretty_print=True).decode("iso-8859-1").replace("CLASS", "class")
+
+    def create_people_page(self, category_id, webis_people, output_path):
+        """
+
+        :param category_id:
+        :param webis-people:
+        :return:
+        """
+        with open(self.people_template_filename, 'r') as file:
+            people_template = file.read()
+
+        t = Template(people_template)
+        output = t.render(category_id=category_id, category_name=self.people_categories[category_id])
+
+        entry = lxml.html.fragment_fromstring(output)
+        for i, item in enumerate(webis_people):
+            row = self.get_row(item.key, item, output_path)
+            entry.find("div").append(row)
+
+        et.indent(entry, space="\t", level=0)
+
+        return et.tostring(entry, pretty_print=True).decode("iso-8859-1").replace("CLASS", "class")
+
+
+
 
     def get_jsonld(self, item):
         """ todo: switch to PyLD"""
@@ -599,6 +637,84 @@ class Bib2Html:
         """
         pass
 
+    def iranthology(self, bib_files={}, output_path={}):
+        """
+        - group bib-entries by year
+        :return:
+        """
+        start = time.time()
+        bib2html_logger.info("\n1. Update iranthology.")
+        with open(self.bib_list_template_filename, 'r') as file:
+            bib_list_template = file.read()
+
+        bib_publications = dict()
+        files_parsed_string = ""
+        for k, bib_filename in bib_files.items():
+            try:
+                bib_publications[k] = self.load_bib_file(bib_filename)
+                files_parsed_string += f"\n- {bib_filename}"
+            except Exception as e:
+                files_parsed_string += self.format_stacktrace(bib_filename, e)
+                continue
+        bib2html_logger.info("""\nBib files parsed: """ + files_parsed_string)
+        bib2html_logger.info(F"\nParsing took: {time.time()-start}" )
+
+        files_list_str = ""
+        for output_publications_filename, bib_publications in bib_publications.items():
+            website = output_publications_filename.split("-")[1]
+            #self.existing_hrefs = get_existing_hrefs(github_webis[website]['username'], github_webis[website]['repo'], github_webis[website]['directory'])
+            grouped = {}
+            for item in bib_publications.entries.values():
+                if 'options' in item.fields and 'skipbib=true' in item.fields['options']:
+                    continue
+                if item.key.startswith("collection-"):
+                    continue
+                if not item.fields['year'] in grouped:
+                    grouped[item.fields['year']] = []
+                item.fields['author'] = format_persons(item.persons.get('author', []), "text")
+                item.fields['data_author'] = ",".join([get_person_name(person, "text") for person in item.persons.get('author', [])])
+                if 'editor' in item.persons:
+                    max_names = max_editor_names
+                    if item.type in ["incollection", "proceedings"]:
+                        max_names = 9999999
+                    item.fields['editor'] = format_persons(item.persons.get('editor', []), "text", max_names)
+                    item.fields['data_editor'] = ",".join([get_person_name(person, "text") for person in item.persons.get('editor', [])])
+                item.fields['bibid'] = item.key.replace(":", "_")
+                item.fields['raw'] = get_raw_bib_entry(item)
+                item.fields['title'] = re.sub("\\\\sc ", "", item.fields['title'].translate(str.maketrans('', '', '{}')))
+                #item = self.get_href_if_exists(github_webis[website]['domain'], "publications", item)
+                #item = self.get_href_if_exists(github_webis[website]['domain'], "posters", item)
+                #item = self.get_href_if_exists(github_webis[website]['domain'], "slides", item)
+
+                #artifacts = [re.sub("posters", "poster", re.sub("_href$", "", re.sub("url$", "", field_name))) for field_name in item.fields if (field_name in ["doi", "posters_href", "slides_href"] or (field_name.endswith("url") and field_name != "url")) and item.fields[field_name] != ""]
+                #if len(artifacts) > 0:
+                #    item.fields['artifacts'] = ",".join(artifacts)
+
+                grouped[item.fields['year']].insert(0, item)
+                self.fields_to_text(item)
+
+            self.sort_publication_items(grouped)
+
+            t = self.templateEnv.get_template("publications.html.jinja2")
+
+            try:
+
+                output = t.render(bib_entries=OrderedDict(sorted(grouped.items(), reverse=True)).items())
+            except jinja2.exceptions.UndefinedError as e:
+                bib2html_logger.error("Error in: " + str(e), exc_info=True)
+                traceback.print_exc()
+                continue
+
+            output_file_path = pathlib.Path(self.output_path + "/" + output_publications_filename + f"/_includes/{output_publications_filename}.html")
+            output_file_path.parent.mkdir(exist_ok=True, parents=True)
+            with open(output_file_path, 'w') as outputfile:
+                outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
+
+            files_list_str += f"\n- {output_publications_filename}.html"
+        bib2html_logger.info(f"\nWeb pages generated:{files_list_str}")
+        bib2html_logger.info(f"\nWeb pages generation took:{time.time() - start}")
+
+
 
     def sort_publication_items(self, grouped):
         for year, entries in grouped.items():
@@ -618,11 +734,45 @@ class Bib2Html:
                 item.fields[k] = v if "url" in k else str(Text.from_latex(v))
         except Exception as e:
             print(e)
+        
 
-    def people(self):
-        pass
+    def people(self, bib_files={}, output_path={}):
+        
+        start = time.time()
+        bib_people = dict()
+        files_parsed_string = ""
+        for k, bib_filename in bib_files.items():
+            try:
+                bib_people[k] = self.load_bib_file(bib_filename)
+                files_parsed_string += f"\n- {bib_filename}"
+            except Exception as e:
+                files_parsed_string += self.format_stacktrace(bib_filename, e)
+                continue
+        bib2html_logger.info("""\nBib files parsed: """ + files_parsed_string)
+        bib2html_logger.info(F"\nParsing took: {time.time()-start}" )
+        
+        bib_entries = bib_people['webis-people'].entries
 
-    def execute(self, to_execute=["data", "publications"], log_capture_string=None):
+        # Convert the entries to a list of dictionaries
+        bib_dicts = [entry.fields for entry in bib_entries.values()]
+
+        # Load the Jinja template
+        #template = jinja2.Template(self.people_template_filename)
+        t = self.templateEnv.get_template("people.html.jinja2")
+        
+        output = t.render(peoples=bib_dicts)
+        #output = t.render(namelast, nametitle, namelast, email, institution, interests)
+
+        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/people.html")
+        output_file_path.parent.mkdir(exist_ok=True, parents=True)
+        with open(output_file_path, 'w') as outputfile:
+            outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
+
+
+        
+        
+
+    def execute(self, to_execute=["people"], log_capture_string=None):
         tasks = {'publications': {'func': self.publications,
                                   'files': {'bib-pan': 'pan-publications.bib',
                                             'bib-touche': 'touche-publications.bib',
@@ -631,7 +781,7 @@ class Bib2Html:
                                   'output_path': {'bib-pan': 'pan-webis-de',
                                                   'bib-touche': 'touche-webis-de',
                                                   'bib-webis': 'webis-de',
-                                                  'bib-theses': 'webis-de'}
+                                                  'bib-theses': 'webis-de'},
                                   },
                  'data': {'func': self.data,
                           'files': {'data-webis': 'webis-data.bib',
@@ -668,7 +818,7 @@ if __name__ == '__main__':
                         help="Output path to export generated html-files.")
     parser.add_argument('-c', '--create-output-path', action='store_true', help="Create output path.")
     parser.add_argument('-f', '--output-overwrite', action='store_true', help="Overwrite output path.")
-    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["data", "publications"],
+    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["people"],
                         help="Set tasks (all by default).")
     args = parser.parse_args()
     bib2html_logger.info("bib2html.py script called with arguments: %s" % vars(args))

@@ -1,0 +1,17 @@
+{% for people in peoples %}
+  <div id="{{ people.namelast }}" class="entry">
+    <div class="image people-image">
+      <img src="people/img/{{ people.namelast }}.jpg" alt="{{ people.nametitle }} {{ people.namefirst }} {{ people.namelast }}" />
+    </div>
+    <div class="description">
+      <p>{{ people.nametitle }} {{ people.namefirst }} {{ people.namelast }}</p>
+      <span uk-icon="mail"></span>&nbsp;{{ people.email }}
+      <br>
+      <span uk-icon="location"></span>&nbsp;{{ people.institution }}
+      <br>
+      <p class="information">
+        Interests: {{ people.interests }}
+      </p>
+    </div>
+  </div>
+{% endfor %}

@@ -899,9 +899,6 @@ class Bib2Html:
             # more events of this type go here
         ]}
 
-
-
-
         t = self.templateEnv.get_template("event.html.jinja2")
         
         output = t.render(events=events) 
@@ -910,7 +907,99 @@ class Bib2Html:
         output_file_path.parent.mkdir(exist_ok=True, parents=True)
         with open(output_file_path, 'w') as outputfile:
             outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
+            
+            
+    
+    def sharedtask(self, bib_files={}, output_path={}):
 
+        event_types = [
+        {
+            "id": "authorship-analysis",
+            "name": "Authorship Analysis",
+            "events": [
+                {
+                    "id": "authorship-attribution",
+                    "name": "Authorship Attribution",
+                    "task": "Author Identification",
+                    "editions": [
+                        {
+                            "year": "2019",
+                            "url": "clef19/pan19-web/authorship-attribution.html"
+                        },
+                        {
+                            "year": "2018",
+                            "url": "clef18/pan18-web/authorship-attribution.html"
+                        },
+                        {
+                            "year": "2012",
+                            "url": "clef12/pan12-web/authorship-attribution.html"
+                        },
+                        {
+                            "year": "2011",
+                            "url": "clef11/pan11-web/authorship-attribution.html"
+                        }
+                    ]
+                },
+                {
+                    "id": "authorship-clustering",
+                    "name": "Authorship Clustering",
+                    "task": "Author Identification",
+                    "editions": [
+                        {
+                            "year": "2017",
+                            "url": "clef17/pan17-web/author-clustering.html"
+                        },
+                        {
+                            "year": "2016",
+                            "url": "clef16/pan16-web/author-clustering.html"
+                        }
+                    ]
+                },
+                {
+                    "id": "authorship-verification",
+                    "name": "Authorship Verification",
+                    "task": "Author Identification",
+                    "editions": [
+                        {
+                            "year": "2023",
+                            "url": "clef23/pan23-web/author-identification.html"
+                        },
+                        {
+                            "year": "2022",
+                            "url": "clef22/pan22-web/author-identification.html"
+                        },
+                        {
+                            "year": "2021",
+                            "url": "clef21/pan21-web/author-identification.html"
+                        },
+                        {
+                            "year": "2020",
+                            "url": "clef20/pan20-web/author-identification.html"
+                        },
+                        {
+                            "year": "2015",
+                            "url": "clef15/pan15-web/authorship-verification.html"
+                        },
+                        {
+                            "year": "2014",
+                            "url": "clef14/pan14-web/authorship-verification.html"
+                        }
+                    ]
+                }
+            ]
+        }]
+
+        t = self.templateEnv.get_template("shared_tasks.html.jinja2")
+        
+        output = t.render(event_types=event_types) 
+            
+        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/bib-shared-tasks.html")
+        output_file_path.parent.mkdir(exist_ok=True, parents=True)
+        with open(output_file_path, 'w') as outputfile:
+            outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")         
+            
+            
+            
     def execute(self, to_execute=["people"], log_capture_string=None):
         tasks = {'publications': {'func': self.publications,
                                   'files': {'bib-pan': 'pan-publications.bib',
@@ -951,6 +1040,11 @@ class Bib2Html:
                               'output_path': 'webis-de',
                      
                  },
+                 'shared-task': {'func': self.sharedtask,
+                              'files': {}, #example dict in function
+                              'output_path': 'webis-de',
+                     
+                 },
                  'lecturenotes': {'func': self.lecturenotes,
                                   'files': {'lecturenotes': 'lecturenotes.bib'},
                                   'output_path': 'webis-de',
@@ -977,7 +1071,7 @@ if __name__ == '__main__':
                         help="Output path to export generated html-files.")
     parser.add_argument('-c', '--create-output-path', action='store_true', help="Create output path.")
     parser.add_argument('-f', '--output-overwrite', action='store_true', help="Overwrite output path.")
-    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["events"],
+    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["shared-task"],
                         help="Set tasks (all by default).")
     args = parser.parse_args()
     bib2html_logger.info("bib2html.py script called with arguments: %s" % vars(args))

@@ -1,0 +1,61 @@
+<main>
+    <section class="uk-section uk-section-default">
+      <div class="uk-container uk-margin-medium-bottom">
+        <h1>Shared Tasks</h1>
+        <ul class="uk-list">
+          {% for event_type in event_types %}
+            <li><span data-uk-icon="chevron-down"></span> <a href="#{{ event_type.id }}">{{ event_type.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+  
+      <div class="uk-container uk-margin-medium">
+        <div id="search-control">
+          <input type="text" class="uk-input" id="filter-field" placeholder="Type here to filter&hellip;"/>
+        </div>
+  
+        <div id="filtered-all-message" class="uk-hidden uk-text-muted" aria-hidden="true">
+          None of our shared tasks match your filter.
+        </div>
+      </div>
+  
+      <div class="uk-container uk-margin-medium webis-data-table">
+        <table class="uk-table uk-table-divider uk-table-small targetable sortable">
+          <thead>
+            {% for event_type in event_types %}
+              <tr>
+                <th id="{{ event_type.id }}"></th>
+                <th colspan="3">
+                  {{ event_type.name }}
+                  <a href="#" class="uk-float-right uk-link-reset" data-uk-icon="chevron-up"></a>
+                </th>
+              </tr>
+              <tr>
+                <th></th>
+                <th class="header uk-width-1-3"><span>Name</span></th>
+                <th class="header uk-width-1-4"><span>Task</span></th>
+                <th class="header uk-table-expand"><span>Edition</span></th>
+              </tr>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for event_type in event_types %}
+              {% for event in event_type.events %}
+                <tr>
+                  <td id="{{ event.id }}"></td>
+                  <td>{{ event.name }}</td>
+                  <td>{{ event.task }}</td>
+                  <td>
+                    {% for edition in event.editions %}
+                      [<a href="{{ edition.url }}">{{ edition.year }}</a>]
+                    {% endfor %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  

@@ -1,0 +1,21 @@
+<main class="uk-section uk-section-default">
+    <div class="uk-container">
+      <h1>Awards</h1>
+    </div>
+  
+    <div class="uk-container uk-margin-medium">
+      {% for year, awards in awards.items() %}
+        <div class="webis-list">
+          <h2 id="{{ year }}">{{ year }}</h2>
+          {% for award in awards %}
+            <div id="{{ award.id }}" data-author="{{ award.authors }}" class="entry">
+              <div class="description">
+                {{ award.description }}
+              </div>
+            </div>
+          {% endfor %}
+        </div> <!-- webis-list -->
+      {% endfor %}
+    </div>
+  </main>
+  

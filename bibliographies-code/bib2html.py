@@ -495,8 +495,8 @@ class Bib2Html:
                                         'orcid': entry.fields.get('orcid', "")})
         return authornames
 
-    def load_bib_file(self, filename, bib_type="other"):
-        return WebisBibParser(encoding='iso-8859-1', bib_type=bib_type).parse_file(self.input_path + filename)
+    def load_bib_file(self, filename, bib_type="other",encoding='iso-8859-1'):
+        return WebisBibParser(encoding=encoding, bib_type=bib_type).parse_file(self.input_path + filename)
 
     def format_stacktrace(self, bib_filename, exception):
         traceback_str = ' '.join(traceback.format_tb(exception.__traceback__)) + str(exception)
@@ -743,7 +743,7 @@ class Bib2Html:
         files_parsed_string = ""
         for k, bib_filename in bib_files.items():
             try:
-                bib_people[k] = self.load_bib_file(bib_filename)
+                bib_people[k] = self.load_bib_file(bib_filename, encoding="utf-8")
                 files_parsed_string += f"\n- {bib_filename}"
             except Exception as e:
                 files_parsed_string += self.format_stacktrace(bib_filename, e)
@@ -1071,7 +1071,7 @@ if __name__ == '__main__':
                         help="Output path to export generated html-files.")
     parser.add_argument('-c', '--create-output-path', action='store_true', help="Create output path.")
     parser.add_argument('-f', '--output-overwrite', action='store_true', help="Overwrite output path.")
-    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["shared-task"],
+    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["people"],
                         help="Set tasks (all by default).")
     args = parser.parse_args()
     bib2html_logger.info("bib2html.py script called with arguments: %s" % vars(args))

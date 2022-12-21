@@ -1,0 +1,40 @@
+---
+layout: ir-anthology
+nav_active: events
+title: Webis Events
+description: Overview of events
+---
+<nav class="uk-container">
+<ul class="uk-breadcrumb">
+<li><a href="index.html">ir.webis.de</a></li>
+<li class="uk-disabled"><a href="#">Events</a></li>
+</ul>
+</nav>
+
+
+<div class="uk-container uk-margin-medium">
+<div id="search-control">
+<input type="text" class="uk-input" id="filter-field" placeholder="Type here to filter&hellip;"/>
+</div>
+</div>
+
+
+<div class="uk-container uk-margin-medium">
+<!--Automatic parsed html could be included here (rest should be removed)-->
+
+
+
+
+{% include bib-events.html %}
+
+
+<div id="filtered-all-message" class="uk-hidden uk-text-muted" aria-hidden="true">
+None of our events match your filter.
+</div>
+</div>
+</main>
+
+<script src="https://assets.webis.de/js/filter.js"></script>
+<script>
+initWebisParagraphsFiltering();
+</script>

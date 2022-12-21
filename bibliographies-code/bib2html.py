@@ -761,16 +761,155 @@ class Bib2Html:
         t = self.templateEnv.get_template("people.html.jinja2")
         
         output = t.render(peoples=bib_dicts)
-        #output = t.render(namelast, nametitle, namelast, email, institution, interests)
 
-        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/people.html")
+        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/bib-people.html")
         output_file_path.parent.mkdir(exist_ok=True, parents=True)
         with open(output_file_path, 'w') as outputfile:
             outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
 
+    def teaching(self, bib_files={}, output_path={}):
+        
+        # This is an example how the parsed strcuture should look like:
+        semesters = [
+            {
+                'id': 'ws22',
+                'name': 'WS 2022/23',
+                'courses': [
+                {
+                    'name': 'Course in Advanced Natural Language Processing',
+                    'url': '/teaching/advanced-natural-language-processing-ws22/advanced-natural-language-processing-ws22.html'
+                },
+                {
+                    'name': 'Course in Foundations of Machine Learning',
+                    'url': '/teaching/machine-learning-ws22/machine-learning-ws22.html'
+                },
+                {
+                    'name': "Research Seminar (Bachelor's)",
+                    'url': '/teaching/research-seminar-ws22/research-seminar-ws22.html'
+                },
+                {
+                    'name': "Graduate Seminar (Master's)",
+                    'url': '/teaching/graduate-seminar-ws22/graduate-seminar-ws22.html'
+                },
+                ]
+            },
+            {
+                'id': 'ss22',
+                'name': 'SS 2022',
+                'courses': [
+                {
+                    'name': 'Big Data and Language Technologies Seminar',
+                    'url': '/teaching/big-data-and-language-technologies-ss22/big-data-and-language-technologies-ss22.html'
+                },
+                {
+                    'name': 'Course in Information Retrieval',
+                    'url': '/teaching/information-retrieval-ss22/information-retrieval-ss22.html'
+                },
+                {
+                    'name': 'Graduation Seminar',
+                    'url': '/teaching/ostemir-ss22/ostemir-ss22.html'
+                },
+                ]
+            },
+            # ... other semesters
+            ]
 
         
+        t = self.templateEnv.get_template("teaching.html.jinja2")
         
+        output = t.render(semesters=semesters)
+
+        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/bib-teaching.html")
+        output_file_path.parent.mkdir(exist_ok=True, parents=True)
+        with open(output_file_path, 'w') as outputfile:
+            outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
+        
+    def awards(self, bib_files={}, output_path={}):
+        
+        
+        awards = {
+        "2020": [
+            {
+            "id": "fairest-dataset-award-2020",
+            "author": "johannes kiesel,martin potthast,matthias hagen,florian kneist,benno stein",
+            "description": "Winner of the <a href=\"https://webis.de/weimar/awards/img/fdm20-fairest-dataset-award.pdf\">FAIRest Dataset Award</a>&nbsp;of the Th&uuml;ringer Kompetenznetzwerks Forschungsdatenmanagement (TKFDM) awarded with &euro;&nbsp;2,000 for the&nbsp;<a href=\"https://webis.de/data.html#webis-web-archive-17\">Webis Web Archive 2017</a>. (Johannes Kiesel, Martin Potthast, Matthias Hagen, Florian Kneist, Benno Stein)"
+            },
+            {
+            "id": "sigir-student-travel-grant-2020",
+            "author": "johannes kiesel",
+            "description": "<a href=\"https://sigir.org/general-information/travel-grants/\">SIGIR Student Travel Grant</a>&nbsp;of the Special Interest Group on Information Retrieval (SIGIR) for the fifth ACM SIGIR Conference on Human Information Interaction and Retrieval (CHIIR 2020) for&nbsp;<a href=\"https://webis.de/publications.html#kiesel_2020a\">Investigating Expectations for Voice-based and Conversational Argument Search on the Web</a>. (Johannes Kiesel)"
+            }
+        ],
+        "2019": [
+            {
+            "id": "gscl-finalist-2019",
+            "description": "Finalist nominee <a href=\"https://web.archive.org/web/20200330115544/https://gscl.org/en/presivergabe\">GSCL Award 2019</a> (KONVENS 2019) for \"Best Thesis (Master): Authorship Obfuscation Using Heuristic Search\" (Janek Bevendorff)"
+            },
+            {
+            "id": "best-paper-ki-2019",
+            "author": "yamen ajjour, henning wachsmuth, johannes kiesel, martin potthast, matthias hagen, benno stein",
+            "description": "<a href=\"https://webis.de/weimar/awards/img/ki19-best-paper-award.jpg\">Best Paper Award</a> at the 42nd German Conference on Artifical Intelligence (KI 2019) for <a href=\"https://webis.de/publications.html#ajjour_2019a\">Data Acquisition for Argument Search: The args.me corpus.</a> </br> (Yamen Ajjour, Henning Wachsmuth, Johannes Kiesel, Martin Potthast, Matthias Hagen, and Benno Stein)"
+            }
+        ]
+        }
+        
+        t = self.templateEnv.get_template("awards.html.jinja2")
+        
+        output = t.render(awards=awards)
+        
+        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/bib-awards.html")
+        output_file_path.parent.mkdir(exist_ok=True, parents=True)
+        with open(output_file_path, 'w') as outputfile:
+            outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
+            
+            
+    def events(self, bib_files={}, output_path={}):
+            
+        events = {
+        "Conferences and Distinguished Workshops": [
+            {
+                "title": "TMG 2022 @ KI 2022",
+                "url": "https://recap.uni-trier.de/2022-tmg-workshop/",
+                "organizers": "Alexander Bondarenko, Shahbaz Syed",
+                "description": "\"1st Workshop on Text Mining and Generation (TMG)\", held in conjunction with the 45th German Conference on Artifical Intelligence (KI 2022), co-organized by Alexander Bondarenko and Shahbaz Syed. Goal: bridging the gap between text mining (knowledge extraction) and text generation.",
+            },
+            {
+                "title": "ArgMining 2019 @ ACL 2019",
+                "url": "https://argmining19.webis.de/",
+                "organizers": "Benno Stein, Henning Wachsmuth",
+                "description": "\"6th Workshop on Argument Mining\", held in conjunction with the 57th Annual Meeting of the Association for Computational Linguistics (ACL 2019), and chaired by Benno Stein and Henning Wachsmuth. Goal: foster future research and development in the area of computational argument mining. [<a href=\"publications.html#stein_2019\">proceedings</a>]",
+            },
+            # more events of this type go here
+        ],
+        "Dagstuhl Seminars": [
+            {
+                "title": "Towards a Unified Model of Scholarly Argumentation @ Schloss Dagstuhl 2022",
+                "url": "https://www.dagstuhl.de/22432",
+                "organizers": "Khalid Al-Khatib, Anita de Waard, Iryna Gurevych, Yufang Hou",
+                "keywords": "framing",
+                "description": "Dagstuhl Seminar 22432 \"Towards a Unified Model of Scholarly Argumentation\", to be organized by Khalid Al-Khatib, Anita de Waard, Iryna Gurevych, and Yufang Hou in 2022. Goal: bring together researchers from different disciplines to discuss the state of the art in scholarly argumentation and identify new directions for future research.",
+            },
+            {
+                "title": "Digital Humanities and Computational Linguistics @ Schloss Dagstuhl 2020",
+                "url": "https://www.dagstuhl.de/19442",
+                "organizers": "Martin Potthast, Benno Stein",
+                "keywords": "digital humanities, computational linguistics",
+                "description": "Dagstuhl Seminar 19442 \"Digital Humanities and Computational Linguistics\", organized by Martin Potthast and Benno Stein in 2020. Goal: bring together researchers from different disciplines to discuss the intersection of digital humanities and computational linguistics, and identify new directions for future research.",
+            },
+            # more events of this type go here
+        ]}
+
+
+
+
+        t = self.templateEnv.get_template("event.html.jinja2")
+        
+        output = t.render(events=events) 
+            
+        output_file_path = pathlib.Path(self.output_path + "/" + output_path + f"/_includes/bib-events.html")
+        output_file_path.parent.mkdir(exist_ok=True, parents=True)
+        with open(output_file_path, 'w') as outputfile:
+            outputfile.write("{% raw %}\n" + output + "\n{% endraw %}")
 
     def execute(self, to_execute=["people"], log_capture_string=None):
         tasks = {'publications': {'func': self.publications,
@@ -783,6 +922,11 @@ class Bib2Html:
                                                   'bib-webis': 'webis-de',
                                                   'bib-theses': 'webis-de'},
                                   },
+                 'ir-anthology': { 'func': self.iranthology,
+                                  'files': {'ir-anthology': 'ir-anthology.bib'
+                                 },
+                                  'output_path': 'ir-anthology',
+                                  },
                  'data': {'func': self.data,
                           'files': {'data-webis': 'webis-data.bib',
                                     'data-other': 'other-data.bib'},
@@ -792,6 +936,21 @@ class Bib2Html:
                             'files': {'webis-people': 'webis-people.bib'},
                             'output_path': 'webis-de',
                             },
+                 'teaching': {'func': self.teaching,
+                              'files': {}, #example dict in function
+                              'output_path': 'webis-de',
+                     
+                 },
+                 'awards': {'func': self.awards,
+                              'files': {}, #example dict in function
+                              'output_path': 'webis-de',
+                     
+                 },
+                 'events': {'func': self.events,
+                              'files': {}, #example dict in function
+                              'output_path': 'webis-de',
+                     
+                 },
                  'lecturenotes': {'func': self.lecturenotes,
                                   'files': {'lecturenotes': 'lecturenotes.bib'},
                                   'output_path': 'webis-de',
@@ -818,7 +977,7 @@ if __name__ == '__main__':
                         help="Output path to export generated html-files.")
     parser.add_argument('-c', '--create-output-path', action='store_true', help="Create output path.")
     parser.add_argument('-f', '--output-overwrite', action='store_true', help="Overwrite output path.")
-    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["people"],
+    parser.add_argument('-t', '--tasks', type=str, nargs='+', default=["events"],
                         help="Set tasks (all by default).")
     args = parser.parse_args()
     bib2html_logger.info("bib2html.py script called with arguments: %s" % vars(args))
